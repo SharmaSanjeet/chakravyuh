@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auralis Status</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+  body{margin:0;font:15px/1.6 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#182430;background:#f4f6f8}
+  header{background:#0d1b26;color:#fff;padding:22px 24px}
+  main{max-width:760px;margin:24px auto;padding:0 24px}
+  .row{display:flex;justify-content:space-between;align-items:center;background:#fff;border:1px solid #dde3ea;border-radius:8px;padding:12px 16px;margin-bottom:8px}
+  .dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:8px}
+  .ok{background:#15803d} .deg{background:#b45309}
+  .state{font-size:13px;color:#64748b}
+  .banner{background:#e5f5ea;border:1px solid #b5dfc2;color:#14532d;border-radius:8px;padding:12px 16px;margin-bottom:16px}
+</style>
+</head>
+<body>
+<header><strong>Auralis Status</strong> — operational</header>
+<main>
+  <div class="banner">All core systems operational. Refreshed {{chakravyuh.minutes_ago}} minutes ago.</div>
+  <div class="row"><span><span class="dot ok"></span>Telemetry Ingest</span><span class="state">operational</span></div>
+  <div class="row"><span><span class="dot ok"></span>Query Engine</span><span class="state">operational</span></div>
+  <div class="row"><span><span class="dot ok"></span>Dashboards</span><span class="state">operational</span></div>
+  <div class="row"><span><span class="dot deg"></span>Alert Delivery</span><span class="state">degraded performance</span></div>
+  <div class="row"><span><span class="dot ok"></span>Log Storage</span><span class="state">operational</span></div>
+  <p style="color:#64748b;font-size:13px">Machine-readable summary: <a href="/status/api/summary.json">summary.json</a></p>
+</main>
+</body>
+</html>

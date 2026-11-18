@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "brand": "Auralis",
+  "note": "Curated seed of INERT portals (static files + mock data). The architect agent mixes/expands this. No backend, no execution.",
+  "mounts": [
+    { "prefix": "/docs", "dir": "sites/docs", "spa": false },
+    { "prefix": "/status", "dir": "sites/status", "spa": false },
+    { "prefix": "/", "dir": "sites/console", "spa": false }
+  ]
+}

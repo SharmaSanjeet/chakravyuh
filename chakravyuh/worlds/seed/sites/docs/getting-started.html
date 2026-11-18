@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Getting started — Auralis Docs</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+  body{margin:0;font:15px/1.65 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#182430;background:#fff}
+  .wrap{display:flex;min-height:100vh}
+  aside{width:240px;border-right:1px solid #dde3ea;padding:22px 18px;background:#f8fafb}
+  aside a{display:block;color:#334155;text-decoration:none;padding:4px 0;font-size:14px}
+  aside a:hover{color:#0e7490}
+  main{flex:1;max-width:760px;padding:36px 42px}
+  h1{font-size:26px;margin:0 0 8px} h3{margin-top:28px}
+  code{font-family:ui-monospace,Menlo,monospace;background:#eef2f5;padding:1px 5px;border-radius:4px}
+  pre{background:#0d1b26;color:#dbe7ef;padding:14px 16px;border-radius:8px;overflow:auto}
+  pre code{background:none;color:inherit;padding:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <aside>
+    <strong>Auralis Docs</strong><br><br>
+    <a href="/docs/">Introduction</a>
+    <a href="/docs/getting-started.html">Getting started</a>
+    <a href="/">← Back to console</a>
+  </aside>
+  <main>
+    <h1>Getting started</h1>
+    <p>This walkthrough provisions a local Auralis agent, points it at a scratch tenant, and
+       verifies the ingest path end to end. Budget about ten minutes.</p>
+    <h3>Install the agent</h3>
+    <p>The <code>auralis-agent</code> CLI ships as a <a href="/downloads/auralis-agent/2.4.1/auralis-agent-linux-amd64.tar.gz">static binary</a>
+       and as a Python wheel. Pick one and confirm the version before continuing:</p>
+    <pre><code>pip install auralis-agent
+auralis-agent --version   # expect 2.x</code></pre>
+    <h3>Configure and launch</h3>
+    <p>Reference copies of the <a href="/configs/auralis.yaml.sample">sample config</a> and the
+       sandbox <a href="/configs/.env.sandbox">environment file</a> are published for offline review.</p>
+    <pre><code>auralis-agent init --env sandbox        # writes auralis.yaml
+auralis-agent start --config auralis.yaml   # serves locally on :8080
+auralis-agent tail --component ingest-gateway --follow</code></pre>
+    <h3 id="api">Reading platform endpoints</h3>
+    <p>Health and status are plain JSON documents — handy for smoke tests after a deploy:</p>
+    <pre><code>curl -s localhost:8080/api/health.json
+curl -s localhost:8080/status/api/summary.json</code></pre>
+    <p>Authenticated routes sit behind <code>ingest-gateway</code> and expect a scoped,
+       short-lived bearer token issued per environment. Tokens rotate hourly.</p>
+  </main>
+</div>
+</body>
+</html>

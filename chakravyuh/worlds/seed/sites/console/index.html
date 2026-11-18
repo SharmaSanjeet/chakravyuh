@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auralis — Operations</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+  :root{--bg:#f4f6f8;--card:#fff;--ink:#182430;--muted:#64748b;--line:#dde3ea;--brand:#0e7490;--ok:#15803d;--warn:#b45309}
+  *{box-sizing:border-box}
+  body{margin:0;font:14px/1.55 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+  header{background:#fff;border-bottom:1px solid var(--line);padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
+  .brand{font-weight:600;letter-spacing:-.2px}
+  nav a{color:var(--muted);text-decoration:none;margin-left:18px;font-size:13px}
+  nav a:hover{color:var(--ink)}
+  main{max-width:1040px;margin:28px auto;padding:0 24px}
+  h1{font-size:20px;margin:0 0 4px}
+  .sub{color:var(--muted);margin:0 0 24px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:28px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
+  .kpi{font-size:26px;font-weight:600}
+  .lbl{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+  table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);font-size:13px}
+  th{color:var(--muted);font-weight:500;background:#fafafa}
+  .pill{font-size:11px;padding:2px 8px;border-radius:999px}
+  .pill.ok{background:#e5f5ea;color:var(--ok)} .pill.warn{background:#fdf3e7;color:var(--warn)}
+  footer{max-width:1040px;margin:24px auto;padding:0 24px;color:var(--muted);font-size:12px}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+</style>
+</head>
+<body>
+<header>
+  <span class="brand">Auralis <span style="color:var(--muted);font-weight:400">· Operations</span></span>
+  <nav><a href="/">Overview</a><a href="/status/">Status</a><a href="/docs/">Docs</a></nav>
+</header>
+<main>
+  <h1>Operations overview</h1>
+  <p class="sub">Control plane for the Auralis telemetry fleet. Cluster: <strong>eu-west-1</strong>.</p>
+  <div class="grid">
+    <div class="card"><div class="lbl">Services</div><div class="kpi">23</div></div>
+    <div class="card"><div class="lbl">Healthy</div><div class="kpi">22</div></div>
+    <div class="card"><div class="lbl">Open incidents</div><div class="kpi">1</div></div>
+    <div class="card"><div class="lbl">Deploys (7d)</div><div class="kpi">57</div></div>
+  </div>
+  <table>
+    <thead><tr><th>Service</th><th>Version</th><th>Last deploy</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>ingest-gateway</td><td><code>5.2.0</code></td><td>2026-11-04</td><td><span class="pill ok">healthy</span></td></tr>
+      <tr><td>stream-processor</td><td><code>3.8.1</code></td><td>2026-11-02</td><td><span class="pill ok">healthy</span></td></tr>
+      <tr><td>query-engine</td><td><code>2.14.7</code></td><td>2026-10-29</td><td><span class="pill warn">degraded</span></td></tr>
+      <tr><td>alert-router</td><td><code>1.9.3</code></td><td>2026-10-27</td><td><span class="pill ok">healthy</span></td></tr>
+      <tr><td>retention-worker</td><td><code>4.0.2</code></td><td>2026-11-01</td><td><span class="pill ok">healthy</span></td></tr>
+    </tbody>
+  </table>
+</main>
+<footer>© Auralis. Build <code>7c1d0ba</code> · <a href="/docs/" style="color:inherit">documentation</a></footer>
+</body>
+</html>

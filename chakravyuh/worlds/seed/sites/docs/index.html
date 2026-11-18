@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auralis Docs</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+  body{margin:0;font:15px/1.65 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#182430;background:#fff}
+  .wrap{display:flex;min-height:100vh}
+  aside{width:240px;border-right:1px solid #dde3ea;padding:22px 18px;background:#f8fafb}
+  aside h2{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:#64748b;margin:16px 0 6px}
+  aside a{display:block;color:#334155;text-decoration:none;padding:4px 0;font-size:14px}
+  aside a:hover{color:#0e7490}
+  main{flex:1;max-width:760px;padding:36px 42px}
+  h1{font-size:26px;margin:0 0 8px} h3{margin-top:28px}
+  code{font-family:ui-monospace,Menlo,monospace;background:#eef2f5;padding:1px 5px;border-radius:4px}
+  pre{background:#0d1b26;color:#dbe7ef;padding:14px 16px;border-radius:8px;overflow:auto}
+  pre code{background:none;color:inherit;padding:0}
+  .muted{color:#64748b}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <aside>
+    <strong>Auralis Docs</strong>
+    <h2>Guides</h2>
+    <a href="/docs/">Introduction</a>
+    <a href="/docs/getting-started.html">Getting started</a>
+    <h2>Reference</h2>
+    <a href="/docs/getting-started.html#api">API overview</a>
+    <a href="/">← Back to console</a>
+  </aside>
+  <main>
+    <h1>Auralis Docs</h1>
+    <p class="muted">Engineering handbook for the Auralis observability platform.</p>
+    <p>Auralis ingests metrics, traces and logs from customer fleets, normalises them into a
+       single time-series store, and serves dashboards and alerts on top. These pages document
+       how the platform is operated internally — on-call engineers and platform teams are the
+       primary audience. Access requests are handled through the operations console.</p>
+    <h3>How the platform fits together</h3>
+    <p>Telemetry enters through <code>ingest-gateway</code>, is reduced by the
+       <code>stream-processor</code> tier, and lands in columnar storage where the
+       <code>query-engine</code> serves reads. Routing of alert deliveries is delegated to
+       <code>alert-router</code>; expiry of raw spans is owned by <code>retention-worker</code>.</p>
+    <h3>Operating conventions</h3>
+    <p>Every service publishes a health document and ships structured JSON logs to the central
+       collector. Releases roll out through the deployment pipeline with automatic rollback on
+       failed canaries. Start with <a href="/docs/getting-started.html">Getting started</a> to
+       wire up a local environment.</p>
+  </main>
+</div>
+</body>
+</html>

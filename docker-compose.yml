@@ -1,0 +1,23 @@
+services:
+  chakravyuh:
+    build: .
+    ports:
+      - "5000:5000"   # dashboard + API + WebSocket
+      - "8080:8080"   # honeypot (the maze served to the agents)
+    volumes:
+      - chakravyuh-data:/app/data
+    environment:
+      - CHAKRAVYUH_DB_PATH=/app/data/chakravyuh.db
+      - CHAKRAVYUH_ENFORCE_BLOCK=true
+      # Public URL that the remote sensors (agent/agentless) connect to:
+      # - CHAKRAVYUH_PUBLIC_URL=https://chakravyuh.example.com
+      # AI confirmation (optional): uncomment and configure an OpenAI-compatible endpoint.
+      # - CHAKRAVYUH_AI_ENABLED=true
+      # - CHAKRAVYUH_AI_PROVIDER=openai
+      # - CHAKRAVYUH_AI_BASE_URL=https://openrouter.ai/api/v1
+      # - CHAKRAVYUH_AI_API_KEY=
+      # - CHAKRAVYUH_AI_MODEL=anthropic/claude-haiku-5.5
+    restart: unless-stopped
+
+volumes:
+  chakravyuh-data:

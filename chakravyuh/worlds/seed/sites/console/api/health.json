@@ -1,0 +1,11 @@
+{
+  "status": "ok",
+  "version": "2026.11.1",
+  "uptime_seconds": {{chakravyuh.uptime_seconds}},
+  "timestamp": "{{chakravyuh.now_iso}}",
+  "checks": {
+    "ingest": "ok",
+    "storage": "ok",
+    "query": "degraded"
+  }
+}

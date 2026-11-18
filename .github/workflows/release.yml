@@ -1,0 +1,124 @@
+name: Release
+
+# Triggers on vX.Y.Z tags (or manually). Builds the agent binaries for the
+# supported platforms, publishes the Release with the artifacts, and pushes the
+# multi-arch Docker image to GHCR.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+
+env:
+  PYINSTALLER_ARGS: >-
+    --onefile --name chakravyuh-agent
+    --hidden-import httpx
+    --exclude-module fastapi --exclude-module uvicorn
+    --exclude-module pydantic --exclude-module pydantic_settings
+    chakravyuh/agent/__main__.py
+
+jobs:
+  # --- Agent binary: Linux x86_64 (native) ---
+  agent-linux-amd64:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e . pyinstaller
+      - run: pyinstaller ${{ env.PYINSTALLER_ARGS }}
+      - run: mv dist/chakravyuh-agent chakravyuh-agent-linux-amd64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chakravyuh-agent-linux-amd64
+          path: chakravyuh-agent-linux-amd64
+
+  # --- Agent binary: Linux arm64 (via QEMU, no arm runners required) ---
+  agent-linux-arm64:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-qemu-action@v3
+      - name: Build in emulated arm64 container
+        run: |
+          docker run --rm --platform linux/arm64 -v "$PWD":/src -w /src python:3.12-slim bash -c "
+            apt-get update && apt-get install -y binutils >/dev/null &&
+            pip install -e . pyinstaller &&
+            pyinstaller ${{ env.PYINSTALLER_ARGS }} &&
+            cp dist/chakravyuh-agent chakravyuh-agent-linux-arm64"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chakravyuh-agent-linux-arm64
+          path: chakravyuh-agent-linux-arm64
+
+  # --- Agent binary: Windows x86_64 (native) ---
+  agent-windows-amd64:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e . pyinstaller
+      - run: pyinstaller --onefile --name chakravyuh-agent --hidden-import httpx --exclude-module fastapi --exclude-module uvicorn --exclude-module pydantic --exclude-module pydantic_settings chakravyuh/agent/__main__.py
+      - run: move dist\chakravyuh-agent.exe chakravyuh-agent-windows-amd64.exe
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chakravyuh-agent-windows-amd64
+          path: chakravyuh-agent-windows-amd64.exe
+
+  # --- Publishes the GitHub Release with the binaries ---
+  release:
+    needs: [agent-linux-amd64, agent-linux-arm64, agent-windows-amd64]
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/**/*
+
+  # --- Multi-arch Docker image to GHCR (with the linux binaries embedded) ---
+  docker:
+    needs: [agent-linux-amd64, agent-linux-arm64]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Place agent binaries into chakravyuh/agent/dist
+        run: |
+          mkdir -p chakravyuh/agent/dist
+          cp artifacts/chakravyuh-agent-linux-amd64/chakravyuh-agent-linux-amd64 chakravyuh/agent/dist/
+          cp artifacts/chakravyuh-agent-linux-arm64/chakravyuh-agent-linux-arm64 chakravyuh/agent/dist/
+          chmod +x chakravyuh/agent/dist/*
+      - name: Lowercase image name (GHCR requirement)
+        run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Image tags
+        run: |
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            echo "TAGS=${IMAGE}:${GITHUB_REF_NAME},${IMAGE}:latest" >> "$GITHUB_ENV"
+          else
+            echo "TAGS=${IMAGE}:dev" >> "$GITHUB_ENV"
+          fi
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ env.TAGS }}

@@ -1,0 +1,20 @@
+# Chakravyuh admin dashboard — example snippet for Caddy (reverse proxy + TLS).
+#
+# Exposes the dashboard (port 5000 of the chakravyuh-ai container) on its own TLS subdomain,
+# SEPARATE from the public honeypot and from the sensor subdomain. The gate is the Chakravyuh
+# login (cookie session); Caddy only acts as reverse proxy + TLS.
+#
+# Requirements:
+#   1) DNS:  A  chakravyuh-admin.example.com  ->  <your server's IP>
+#   2) chakravyuh-ai reachable from your Caddy (same Docker network) and listening on :5000
+#      (add your proxy's external network to the `chakravyuh` service — see docker-compose.vps.yml).
+#   3) In the compose file: CHAKRAVYUH_COOKIE_SECURE=true and an admin password set
+#      (or read ONCE from the container log).
+#
+# Add this block to your Caddyfile and reload Caddy. Adjust the domain and, if your Caddy runs
+# in a container, the service name (chakravyuh-ai) to match your network.
+
+chakravyuh-admin.example.com {
+	encode gzip zstd
+	reverse_proxy chakravyuh-ai:5000
+}

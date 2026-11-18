@@ -1,0 +1,6 @@
+# Auralis crawler policy — public surfaces only
+User-agent: *
+Disallow: /api/
+Disallow: /internal/
+Disallow: /admin/
+Allow: /

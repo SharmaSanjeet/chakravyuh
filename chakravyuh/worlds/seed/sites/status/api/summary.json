@@ -1,0 +1,11 @@
+{
+  "updated_at": "{{chakravyuh.now_iso}}",
+  "overall": "operational",
+  "components": [
+    { "name": "Telemetry Ingest", "status": "operational" },
+    { "name": "Query Engine", "status": "operational" },
+    { "name": "Dashboards", "status": "operational" },
+    { "name": "Alert Delivery", "status": "degraded_performance" },
+    { "name": "Log Storage", "status": "operational" }
+  ]
+}
