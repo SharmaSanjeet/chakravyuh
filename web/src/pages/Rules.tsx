@@ -5,6 +5,7 @@ import type { DetectionRule } from '../types';
 export function Rules() {
   const [rules, setRules] = useState<DetectionRule[]>([]);
   const [loading, setLoading] = useState(true);
+  const [drafts, setDrafts] = useState<Record<number, string>>({});
 
   const load = () => {
     api.rules.list()
@@ -20,9 +21,19 @@ export function Rules() {
     load();
   };
 
-  const handleWeightChange = async (rule: DetectionRule, weight: number) => {
-    await api.rules.update(rule.id, { weight });
-    load();
+  const commitWeight = async (rule: DetectionRule) => {
+    const raw = drafts[rule.id];
+    setDrafts(d => {
+      const next = { ...d };
+      delete next[rule.id];
+      return next;
+    });
+    if (raw === undefined || raw.trim() === '') return;
+    const weight = Number(raw);
+    if (Number.isFinite(weight) && weight >= 0 && weight <= 1 && weight !== rule.weight) {
+      await api.rules.update(rule.id, { weight });
+      load();
+    }
   };
 
   return (
@@ -49,8 +60,10 @@ export function Rules() {
                   <input
                     type="number"
                     min="0" max="1" step="0.05"
-                    value={rule.weight}
-                    onChange={e => handleWeightChange(rule, Number(e.target.value))}
+                    value={drafts[rule.id] ?? rule.weight}
+                    onChange={e => setDrafts(d => ({ ...d, [rule.id]: e.target.value }))}
+                    onBlur={() => commitWeight(rule)}
+                    onKeyDown={e => { if (e.key === 'Enter') e.currentTarget.blur(); }}
                     className="w-16 bg-surface-alt border border-border rounded px-2 py-1 text-sm font-mono text-center focus:outline-none focus:border-accent"
                   />
                 </div>
