@@ -2,7 +2,7 @@
 
 **By Sanjeet Sharma**
 
-![CI](https://github.com/SharmaSanjeet/chakravyuh/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/SharmaSanjeet/AI-Chakravyuh/actions/workflows/ci.yml/badge.svg)
 
 Chakravyuh is an open-source honeypot built to counter **autonomous AI agents** scanning your
 infrastructure. It serves a **Token Drain maze** — an infinite, coherent maze of believable
